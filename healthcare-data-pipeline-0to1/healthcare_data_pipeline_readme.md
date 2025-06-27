@@ -27,11 +27,11 @@
 ### **🔍 기술적 도전**
 ```sql
 -- 문제: 하나의 PaymentID에 여러 처방약이 연결
--- 다이어트 약만 선별하는 우선순위 로직 필요
+-- 분석 대상 약품만 선별하는 우선순위 로직 필요
 ROW_NUMBER() OVER (PARTITION BY PaymentID ORDER BY 
     CASE 
-        WHEN MedicineName LIKE '%다이어트 약%' AND Memo REGEXP '-1' THEN 1  -- 핵심상품 + 회차정보
-        WHEN MedicineName LIKE '%다이어트 약%' THEN 2                       -- 핵심상품만
+        WHEN MedicineName LIKE '%분석 대상 약품%' AND Memo REGEXP '-1' THEN 1  -- 핵심상품 + 회차정보
+        WHEN MedicineName LIKE '%분석 대상 약품%' THEN 2                       -- 핵심상품만
         WHEN Memo REGEXP '-1' THEN 3                               -- 회차정보만
         ELSE 4
     END
@@ -60,17 +60,17 @@ def determine_treatment_start_date(pay_date, consult_time):
 ### **2. 복잡한 테이블 조인에서 핵심 상품 선별**
 ```sql
 -- 도전: 140개 테이블 중 5개 핵심 테이블의 복잡한 관계
--- 하나의 결제에 다이어트 약 외 여러 약품 포함
+-- 하나의 결제에 분석 대상 약품 외 여러 약품 포함
 
 -- 해결: 비즈니스 우선순위 기반 선택 알고리즘
 WITH PriorityRanking AS (
     SELECT *,
         ROW_NUMBER() OVER (PARTITION BY PaymentID ORDER BY 
             CASE 
-                -- 1순위: 다이어트 약 + 회차 정보 완전 매칭
-                WHEN MedicineName LIKE '%다이어트 약%' AND Memo REGEXP '-1' THEN 1
-                -- 2순위: 다이어트 약만 확인됨
-                WHEN MedicineName LIKE '%다이어트 약%' THEN 2
+                -- 1순위: 분석 대상 약품 + 회차 정보 완전 매칭
+                WHEN MedicineName LIKE '%분석 대상 약품%' AND Memo REGEXP '-1' THEN 1
+                -- 2순위: 분석 대상 약품만 확인됨
+                WHEN MedicineName LIKE '%분석 대상 약품%' THEN 2
                 -- 3순위: 회차 정보만 있음 (약명 결측)
                 WHEN Memo REGEXP '-1' THEN 3
                 ELSE 4
@@ -95,7 +95,7 @@ def medical_workflow_recovery(df, reference_df):
         same_treatment = reference_df[
             (reference_df['PatientID'] == patient_id) &
             (abs(reference_df['ConsultTime'] - target_date) <= pd.Timedelta(days=30)) &
-            (reference_df['MedicineName'].str.contains('다이어트 약', na=False))
+            (reference_df['MedicineName'].str.contains('분석 대상 약품', na=False))
         ]
         
         if not same_treatment.empty:
@@ -133,8 +133,8 @@ def categorize_package(medicine_name, memo, consult_date):
     memo = str(memo).strip()
     medicine_name = str(medicine_name).strip().lower()
     
-    # 다이어트 약인지 확인
-    if not ('다이어트 약' in medicine_name or 'core medication' in medicine_name):
+    # 분석 대상 약품인지 확인
+    if not ('분석 대상 약품' in medicine_name or 'core medication' in medicine_name):
         return '기타'
     
     # 정책 변경 기준일
@@ -295,7 +295,7 @@ system_design_principles = {
 ## 🎯 **주요 코드 스니펫**
 
 <details>
-<summary><strong>📊 다이어트 약 우선순위 선별 로직</strong></summary>
+<summary><strong>📊 분석 대상 약품 우선순위 선별 로직</strong></summary>
 
 ```sql
 -- 의료진과의 협의를 통해 정의한 우선순위 로직
@@ -305,10 +305,10 @@ WITH PrioritySelection AS (
             PARTITION BY PaymentID 
             ORDER BY 
                 CASE 
-                    -- 1순위: 다이어트 약 + 회차 정보 완전
-                    WHEN MedicineName LIKE '%다이어트 약%' AND Memo REGEXP '-1' THEN 1
-                    -- 2순위: 다이어트 약 확인됨
-                    WHEN MedicineName LIKE '%다이어트 약%' THEN 2
+                    -- 1순위: 분석 대상 약품 + 회차 정보 완전
+                    WHEN MedicineName LIKE '%분석 대상 약품%' AND Memo REGEXP '-1' THEN 1
+                    -- 2순위: 분석 대상 약품 확인됨
+                    WHEN MedicineName LIKE '%분석 대상 약품%' THEN 2
                     -- 3순위: 회차 정보만 있음
                     WHEN Memo REGEXP '-1' THEN 3
                     ELSE 4
@@ -338,7 +338,7 @@ def medical_workflow_recovery(df, reference_df):
         same_treatment_window = reference_df[
             (reference_df['PatientID'] == patient_id) &
             (abs(reference_df['ConsultTime'] - target_date) <= pd.Timedelta(days=30)) &
-            (reference_df['MedicineName'].str.contains('다이어트 약', case=False, na=False))
+            (reference_df['MedicineName'].str.contains('분석 대상 약품', case=False, na=False))
         ]
         
         if not same_treatment_window.empty:
@@ -366,8 +366,8 @@ def categorize_package_by_period(medicine_name, memo, consult_date):
     memo = str(memo).strip()
     medicine_name = str(medicine_name).strip().lower()
     
-    # 다이어트 약 여부 확인
-    if not ('다이어트 약' in medicine_name or 'core medication' in medicine_name):
+    # 분석 대상 약품 여부 확인
+    if not ('분석 대상 약품' in medicine_name or 'core medication' in medicine_name):
         return '기타'
     
     # 정책 변경 기준일 (의료진 협의 결과)
