@@ -134,7 +134,7 @@ def categorize_package(medicine_name, memo, consult_date):
     medicine_name = str(medicine_name).strip().lower()
     
     # 분석 대상 약품인지 확인
-    if not ('분석 대상 약품' in medicine_name or 'core medication' in medicine_name):
+    if not ('분석 대상 약품' in medicine_name or 'Target medication' in medicine_name):
         return '기타'
     
     # 정책 변경 기준일
@@ -367,7 +367,7 @@ def categorize_package_by_period(medicine_name, memo, consult_date):
     medicine_name = str(medicine_name).strip().lower()
     
     # 분석 대상 약품 여부 확인
-    if not ('분석 대상 약품' in medicine_name or 'core medication' in medicine_name):
+    if not ('분석 대상 약품' in medicine_name or 'Target medication' in medicine_name):
         return '기타'
     
     # 정책 변경 기준일 (의료진 협의 결과)
