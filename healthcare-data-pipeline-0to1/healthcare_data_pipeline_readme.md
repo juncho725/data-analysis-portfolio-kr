@@ -30,8 +30,8 @@
 -- 다이어트 약만 선별하는 우선순위 로직 필요
 ROW_NUMBER() OVER (PARTITION BY PaymentID ORDER BY 
     CASE 
-        WHEN MedicineName LIKE '%감비%' AND Memo REGEXP '-1' THEN 1  -- 핵심상품 + 회차정보
-        WHEN MedicineName LIKE '%감비%' THEN 2                       -- 핵심상품만
+        WHEN MedicineName LIKE '%다이어트 약%' AND Memo REGEXP '-1' THEN 1  -- 핵심상품 + 회차정보
+        WHEN MedicineName LIKE '%다이어트 약%' THEN 2                       -- 핵심상품만
         WHEN Memo REGEXP '-1' THEN 3                               -- 회차정보만
         ELSE 4
     END
@@ -68,9 +68,9 @@ WITH PriorityRanking AS (
         ROW_NUMBER() OVER (PARTITION BY PaymentID ORDER BY 
             CASE 
                 -- 1순위: 다이어트 약 + 회차 정보 완전 매칭
-                WHEN MedicineName LIKE '%감비%' AND Memo REGEXP '-1' THEN 1
+                WHEN MedicineName LIKE '%다이어트 약%' AND Memo REGEXP '-1' THEN 1
                 -- 2순위: 다이어트 약만 확인됨
-                WHEN MedicineName LIKE '%감비%' THEN 2
+                WHEN MedicineName LIKE '%다이어트 약%' THEN 2
                 -- 3순위: 회차 정보만 있음 (약명 결측)
                 WHEN Memo REGEXP '-1' THEN 3
                 ELSE 4
@@ -95,7 +95,7 @@ def medical_workflow_recovery(df, reference_df):
         same_treatment = reference_df[
             (reference_df['PatientID'] == patient_id) &
             (abs(reference_df['ConsultTime'] - target_date) <= pd.Timedelta(days=30)) &
-            (reference_df['MedicineName'].str.contains('감비', na=False))
+            (reference_df['MedicineName'].str.contains('다이어트 약', na=False))
         ]
         
         if not same_treatment.empty:
@@ -134,7 +134,7 @@ def categorize_package(medicine_name, memo, consult_date):
     medicine_name = str(medicine_name).strip().lower()
     
     # 다이어트 약인지 확인
-    if not ('감비' in medicine_name or 'gambi' in medicine_name):
+    if not ('다이어트 약' in medicine_name or 'core medication' in medicine_name):
         return '기타'
     
     # 정책 변경 기준일
@@ -306,9 +306,9 @@ WITH PrioritySelection AS (
             ORDER BY 
                 CASE 
                     -- 1순위: 다이어트 약 + 회차 정보 완전
-                    WHEN MedicineName LIKE '%감비%' AND Memo REGEXP '-1' THEN 1
+                    WHEN MedicineName LIKE '%다이어트 약%' AND Memo REGEXP '-1' THEN 1
                     -- 2순위: 다이어트 약 확인됨
-                    WHEN MedicineName LIKE '%감비%' THEN 2
+                    WHEN MedicineName LIKE '%다이어트 약%' THEN 2
                     -- 3순위: 회차 정보만 있음
                     WHEN Memo REGEXP '-1' THEN 3
                     ELSE 4
@@ -338,7 +338,7 @@ def medical_workflow_recovery(df, reference_df):
         same_treatment_window = reference_df[
             (reference_df['PatientID'] == patient_id) &
             (abs(reference_df['ConsultTime'] - target_date) <= pd.Timedelta(days=30)) &
-            (reference_df['MedicineName'].str.contains('감비', case=False, na=False))
+            (reference_df['MedicineName'].str.contains('다이어트 약', case=False, na=False))
         ]
         
         if not same_treatment_window.empty:
@@ -367,7 +367,7 @@ def categorize_package_by_period(medicine_name, memo, consult_date):
     medicine_name = str(medicine_name).strip().lower()
     
     # 다이어트 약 여부 확인
-    if not ('감비' in medicine_name or 'gambi' in medicine_name):
+    if not ('다이어트 약' in medicine_name or 'core medication' in medicine_name):
         return '기타'
     
     # 정책 변경 기준일 (의료진 협의 결과)
