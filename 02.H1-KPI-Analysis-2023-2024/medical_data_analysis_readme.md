@@ -9,11 +9,20 @@
 
 ### 1. 환자 유입량
 - **월별 신규 환자 수** 변화 추이
+
+<img src="https://github.com/user-attachments/assets/fd81dcd8-9d34-47ac-b2c0-586c59ec994f" width="500px">
+ 
 - **지점별 유입량** 비교
+
 
 ### 2. 고객 프로필 변화  
 - **연령대별 분포** 변화
+
+<img src="https://github.com/user-attachments/assets/49508c05-2051-4ae0-892c-303e3b0f8f79" width="500px">
+ 
 - **성별 비율** 변화
+
+<img src="https://github.com/user-attachments/assets/c00f032d-9eea-4f23-8a9d-548c3857604f" width="500px">
 
 ### 3. 매출 성과
 - **지점별 월별 매출** 비교
@@ -21,6 +30,9 @@
 
 ### 4. 고객 유지율
 - **재구매 고객 비율** 분석
+
+<img src="https://github.com/user-attachments/assets/00cb4950-646f-48e5-a39c-082ee494a8f1" width="500px">
+
 - **이탈율** 비교
 
 ## 🔍 주요 발견
