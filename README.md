@@ -1,6 +1,6 @@
 # 🏥 Healthcare Data Analysis Portfolio
 
-🇺🇸 View English version → [data-analysis-portfolio](https://github.com/juncho725/data-analysis-portfolio)
+View English version → [data-analysis-portfolio](https://github.com/juncho725/data-analysis-portfolio)
 
 > **헬스케어/의료 분야 데이터 분석가 포트폴리오**
 
