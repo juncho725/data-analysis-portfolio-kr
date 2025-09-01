@@ -38,7 +38,7 @@
 
 ## 📊 주요 데이터 분석 프로젝트
 
-### 📌 [의료 데이터 파이프라인: 실무 복잡성 완전 고려한 0→1 구축](https://github.com/juncho725/data-analysis-portfolio-kr)
+### 📌 [의료 데이터 파이프라인: 실무 복잡성 완전 고려한 0→1 구축](https://github.com/juncho725/data-analysis-portfolio-kr/01.healthcare-data-pipeline-0to1)
 
 #### 🚨 **해결한 핵심 실무 도전들**
 
@@ -114,7 +114,7 @@ WHERE modified_date >= CURDATE() - INTERVAL 1 DAY;
 
 ---
 
-### 📌 [A/B 테스트: 실험 설계 디테일과 분석적 엄밀성](https://github.com/juncho725/data-analysis-portfolio-kr)
+### 📌 [A/B 테스트: 실험 설계 디테일과 분석적 엄밀성](https://github.com/juncho725/data-analysis-portfolio-kr/03.healthcare-Data-AB-Testing)
 
 #### 🚨 **분석 설계의 핵심 의사결정과 근거**
 
